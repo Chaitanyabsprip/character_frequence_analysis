@@ -1,0 +1,21 @@
+[MASTER]
+suggestion-mode=yes
+
+[MESSAGES CONTROL]
+disable=C0114,C0115,C0116,import-error
+
+[REFACTORING]
+max-nested-blocks=3
+
+[VARIABLES]
+allow-global-unused-variables=yes
+
+[BASIC]
+good-names=x,y
+
+[FORMAT]
+max-line-length=81
+
+[DESIGN]
+max-args=4
+min-public-methods=1
