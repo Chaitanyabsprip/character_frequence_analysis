@@ -1,10 +1,12 @@
 # import plotext as plt
+
 import matplotlib.pyplot as plt
 
 
 def bar_plot(freq_map: dict[str, int]):
     x, y = _sanitize(freq_map)
     plt.bar(x, y)
+    plt.tight_layout(pad=0.05)
     plt.show()
 
 

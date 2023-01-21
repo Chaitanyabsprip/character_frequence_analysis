@@ -1,3 +1,5 @@
+import json
+import os
 import re
 
 from display import bar_plot
@@ -12,18 +14,42 @@ def main():
     # print(no_of_special_keys)
     logs = re.sub(SPECIAL_KEYS_REGEX, "", logs)
     logs = logs.replace(" ", "")
-    single_char_freq_map = get_ngram_frequency_map(logs, 1)
-    bigram_freq_map = get_ngram_frequency_map(logs, 2)
-    trigram_freq_map = get_ngram_frequency_map(logs, 3)
-    tetragram_freq_map = get_ngram_frequency_map(logs, 4)
-    # print(single_char_freq_map)
-    # print(bigram_freq_map)
-    # print(trigram_freq_map)
-    # print(tetragram_freq_map)
+    single_char_freq_map = remove_repeated_letters(
+        get_ngram_frequency_map(logs, 1)
+    )
+    bigram_freq_map = remove_repeated_letters(get_ngram_frequency_map(logs, 2))
+    sorted_bigram_freq_map = dict(
+        sorted(bigram_freq_map.items(), key=lambda item: item[1])
+    )
+    trigram_freq_map = remove_repeated_letters(get_ngram_frequency_map(logs, 3))
+    tetragram_freq_map = remove_repeated_letters(
+        get_ngram_frequency_map(logs, 4)
+    )
+    save_as_json(single_char_freq_map, "character_frequency.json")
+    save_as_json(sorted_bigram_freq_map, "bigram_frequency.json")
+    save_as_json(trigram_freq_map, "trigram_frequency.json")
+    save_as_json(tetragram_freq_map, "tetragram_frequency.json")
     bar_plot(single_char_freq_map)
     bar_plot(dict(list(bigram_freq_map.items())[:30]))
     bar_plot(dict(list(trigram_freq_map.items())[:30]))
     bar_plot(dict(list(tetragram_freq_map.items())[:30]))
+
+
+def save_as_json(freq_map: dict[str, int], filename: str):
+    with open(
+        os.getenv("HOME", "/Users/chaitanyasharma") + "/.cache/" + filename,
+        "w+",
+        encoding="UTF-8",
+    ) as file:
+        json.dump(freq_map, file)
+
+
+def remove_repeated_letters(frequency_map: dict[str, int]):
+    freq_map = dict({})
+    for x in frequency_map:
+        if len(set(x)) == len(x):
+            freq_map[x] = frequency_map[x]
+    return freq_map
 
 
 def get_ngram_frequency_map(logs: str, n: int):
